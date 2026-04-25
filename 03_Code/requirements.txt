@@ -1,0 +1,33 @@
+# MGMT 590 Final Project — Python dependencies
+# Install: pip install -r requirements.txt
+# Tested with Python 3.10+
+
+# ---- Core scientific stack ----
+numpy>=1.26
+pandas>=2.1
+scipy>=1.11
+scikit-learn>=1.3
+statsmodels>=0.14
+
+# ---- Dataset loading ----
+datasets>=2.16        # HuggingFace datasets library (arena-140k)
+pyarrow>=14.0         # parquet backing
+huggingface_hub>=0.20
+
+# ---- Visualization ----
+matplotlib>=3.8
+seaborn>=0.13
+plotly>=5.18          # optional: for interactive exploration
+
+# ---- Notebook / progress ----
+jupyter>=1.0
+ipykernel>=6.27
+tqdm>=4.66
+
+# ---- Stats / modeling extras ----
+numdifftools>=0.9     # for numerical Hessians if we need them
+joblib>=1.3           # parallel bootstrap
+
+# ---- Optional: LLM judge experiments (only if using Phase-optional API validation) ----
+# openai>=1.10
+# anthropic>=0.15
