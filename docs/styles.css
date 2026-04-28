@@ -348,11 +348,12 @@ select {
 }
 
 #heroInference {
-  margin: 0;
+  margin: 0 auto;
   color: #374151;
   font-size: 1.02rem;
   max-width: 82ch;
   line-height: 1.45;
+  text-align: center;
 }
 
 .viz-grid {
@@ -364,16 +365,16 @@ select {
 .panel {
   min-height: 300px;
   padding: 0.95rem;
-  background: linear-gradient(180deg, rgba(18, 24, 40, 0.98), rgba(17, 17, 23, 0.98));
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 18px 34px rgba(15, 23, 42, 0.2);
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
 }
 
 .panel h3,
 .panel .section-tag,
 .panel #modelInsight,
 .panel p {
-  color: #e5e7eb;
+  color: #1f2937;
 }
 
 .section-tag {
@@ -381,7 +382,7 @@ select {
   font-size: 0.72rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #c4b5fd;
+  color: #6d28d9;
   font-weight: 700;
 }
 
@@ -404,16 +405,16 @@ select {
 .matchup-section {
   margin-top: 1rem;
   padding: 1rem;
-  background: linear-gradient(180deg, rgba(18, 24, 40, 0.98), rgba(17, 17, 23, 0.98));
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 18px 34px rgba(15, 23, 42, 0.2);
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
 }
 
 .matchup-section h3,
 .matchup-section h4,
 .matchup-section p,
 .matchup-section label {
-  color: #e5e7eb;
+  color: #1f2937;
 }
 
 .matchup-header h3 {
@@ -437,8 +438,8 @@ select {
 }
 
 .duel-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: 16px;
   padding: 0.75rem;
   min-height: 120px;
@@ -454,14 +455,14 @@ select {
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: #cbd5e1;
+  color: #64748b;
 }
 
 .duel-vs {
   text-align: center;
   font-weight: 800;
   font-size: 1.4rem;
-  color: #c4b5fd;
+  color: #4f46e5;
 }
 
 .duel-card.leading {
@@ -493,15 +494,15 @@ select {
 
 .story-card {
   padding: 1rem;
-  background: linear-gradient(180deg, rgba(18, 24, 40, 0.98), rgba(17, 17, 23, 0.98));
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 18px 34px rgba(15, 23, 42, 0.2);
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
 }
 
 .story-card h3,
 .story-card p,
 .story-card .hero-kicker {
-  color: #e5e7eb;
+  color: #1f2937;
 }
 
 .story-card h3 {

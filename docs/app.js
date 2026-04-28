@@ -379,24 +379,42 @@ function renderMatchupExplorer(data) {
     return;
   }
 
+  const withFragility = data.varianceRows.map((r) => {
+    const flips = data.flippedRows.filter(
+      (f) =>
+        f.winner_model_under_standard === r.model ||
+        f.loser_model_under_standard === r.model
+    ).length;
+    return { ...r, fragility: flips };
+  });
+  const vTotals = withFragility.map((r) => r.V_total);
+  const minV = Math.min(...vTotals);
+  const maxV = Math.max(...vTotals);
+  const normalized = withFragility.map((r) => {
+    const scaled = (r.V_total - minV) / (maxV - minV + 1e-9);
+    const robustness = Math.max(
+      18,
+      Math.min(96, (1 - scaled) * 78 + (100 - r.pct_interaction) * 0.22)
+    );
+    return { ...r, robustness };
+  });
+  const a = normalized.find((r) => r.model === modelA.model);
+  const b = normalized.find((r) => r.model === modelB.model);
+
   const confidencePenalty = (zByConfidence[state.confidence] - zByConfidence[90]) / 2;
-  const strengthA = modelStrength(modelA);
-  const strengthB = modelStrength(modelB);
+  const strengthA = modelStrength({ ...a, robustnessScore: a.robustness, flippedFragility: a.fragility });
+  const strengthB = modelStrength({ ...b, robustnessScore: b.robustness, flippedFragility: b.fragility });
   const margin = strengthA - strengthB;
   const winProbA = logistic(margin * 3.6 - confidencePenalty * 0.26);
   const winProbB = 1 - winProbA;
 
-  const uncertaintyA = Math.min(100, modelA.pct_interaction + modelA.pct_sampling);
-  const uncertaintyB = Math.min(100, modelB.pct_interaction + modelB.pct_sampling);
+  const uncertaintyA = Math.min(100, modelA.pct_interaction);
+  const uncertaintyB = Math.min(100, modelB.pct_interaction);
 
   els.duelNameA.textContent = modelA.model;
   els.duelNameB.textContent = modelB.model;
-  els.duelSignalA.textContent = `Estimated robustness: ${(100 - uncertaintyA).toFixed(
-    1
-  )}%`;
-  els.duelSignalB.textContent = `Estimated robustness: ${(100 - uncertaintyB).toFixed(
-    1
-  )}%`;
+  els.duelSignalA.textContent = `Estimated robustness: ${a.robustness.toFixed(1)}%`;
+  els.duelSignalB.textContent = `Estimated robustness: ${b.robustness.toFixed(1)}%`;
 
   const leaderA = winProbA >= winProbB;
   els.duelCardA.classList.toggle("leading", leaderA);
