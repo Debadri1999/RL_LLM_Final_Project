@@ -1,0 +1,6 @@
+metric,value
+N_std_significant_pairs,135.0
+N_hier_significant_pairs,105.0
+survival_rate_rho,0.7777777777777778
+n_flipped_pairs,31.0
+n_new_under_hier,1.0

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arena Uncertainty Dashboard | RL-LLM Final Project</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <canvas id="neural-bg"></canvas>
+    <aside id="speakerNotesOverlay" class="speaker-notes-overlay" aria-live="polite">
+      <div class="notes-head">
+        <p class="notes-kicker">Speaker Notes</p>
+        <button id="speakerNotesToggleBtn" type="button">Hide Notes</button>
+      </div>
+      <h4 id="speakerNotesTitle">Intro</h4>
+      <p id="speakerNotesBody">
+        Open with the research question: how much leaderboard certainty survives once pair-heterogeneous judge noise is modeled.
+      </p>
+      <p id="speakerNotesHint">Shortcut: press N to toggle notes.</p>
+    </aside>
+    <div class="app-shell">
+      <aside class="control-panel glass">
+        <div class="brand-block">
+          <p class="brand-kicker">MGMT 590 | RL-LLM</p>
+          <h1>Arena Uncertainty Explorer</h1>
+          <p class="brand-subtitle">
+            Pair-heterogeneous uncertainty in LLM leaderboard conclusions.
+          </p>
+        </div>
+
+        <section class="controls-group">
+          <h2>Control Panel</h2>
+          <label for="confidenceSlider"
+            >Confidence Level: <span id="confidenceLabel">95%</span></label
+          >
+          <input
+            id="confidenceSlider"
+            type="range"
+            min="80"
+            max="99"
+            step="1"
+            value="95"
+          />
+
+          <label for="topNSelect">Top Models Shown</label>
+          <select id="topNSelect">
+            <option value="5">Top 5</option>
+            <option value="8">Top 8</option>
+            <option value="12" selected>Top 12</option>
+            <option value="20">All 20</option>
+          </select>
+
+          <label for="focusModelSelect">Focus Model</label>
+          <select id="focusModelSelect"></select>
+
+          <label for="viewMetricSelect">Variance View</label>
+          <select id="viewMetricSelect">
+            <option value="absolute" selected>Absolute Variance</option>
+            <option value="percentage">Percentage Contribution</option>
+          </select>
+
+          <button id="presentationModeBtn" class="presentation-btn" type="button">
+            Enter Presentation Mode
+          </button>
+          <button id="quickTourBtn" class="presentation-btn secondary-btn" type="button">
+            TA/Professor Quick Tour
+          </button>
+        </section>
+
+        <section class="key-numbers">
+          <h3>Live Research Snapshot</h3>
+          <div class="metric-card">
+            <span>Significant Pair Gaps (Std BTL)</span>
+            <strong id="stdPairs">-</strong>
+          </div>
+          <div class="metric-card">
+            <span>Significant Pair Gaps (Hier BTL)</span>
+            <strong id="hierPairs">-</strong>
+          </div>
+          <div class="metric-card highlight">
+            <span>Survival Rate</span>
+            <strong id="survivalRate">-</strong>
+          </div>
+          <div class="metric-card">
+            <span>Flipped Pairs</span>
+            <strong id="flippedPairs">-</strong>
+          </div>
+        </section>
+      </aside>
+
+      <main class="main-content">
+        <section class="hero glass intro-seq" id="heroSection">
+          <p class="hero-kicker">Data-Driven Story</p>
+          <h2>How much leaderboard certainty survives robust noise modeling?</h2>
+          <p id="heroInference"></p>
+        </section>
+
+        <section class="viz-grid intro-seq" id="coreVizSection">
+          <article class="glass panel">
+            <h3>Significant Pair Survival Under Confidence Sensitivity</h3>
+            <div id="survivalChart" class="plot"></div>
+          </article>
+
+          <article class="glass panel">
+            <h3>Variance Decomposition Across Models</h3>
+            <div id="varianceStackedChart" class="plot"></div>
+          </article>
+
+          <article class="glass panel">
+            <h3>Top Flipped Winners (Fragility Hotspots)</h3>
+            <div id="flippedChart" class="plot"></div>
+          </article>
+
+          <article class="glass panel inference-panel">
+            <h3>Focused Model Insight</h3>
+            <div id="modelInsight"></div>
+          </article>
+        </section>
+
+        <section class="matchup-section glass intro-seq" id="matchupSection">
+          <div class="matchup-header">
+            <p class="hero-kicker">Arena-Style Matchup Explorer</p>
+            <h3>Model vs Model Comparison Under Uncertainty</h3>
+          </div>
+          <div class="matchup-controls">
+            <div>
+              <label for="matchupModelA">Model A</label>
+              <select id="matchupModelA"></select>
+            </div>
+            <div>
+              <label for="matchupModelB">Model B</label>
+              <select id="matchupModelB"></select>
+            </div>
+          </div>
+          <div class="matchup-main">
+            <div class="duel-card" id="duelCardA">
+              <p class="duel-label">Model A</p>
+              <h4 id="duelNameA">-</h4>
+              <p id="duelSignalA"></p>
+            </div>
+            <div class="duel-vs">VS</div>
+            <div class="duel-card" id="duelCardB">
+              <p class="duel-label">Model B</p>
+              <h4 id="duelNameB">-</h4>
+              <p id="duelSignalB"></p>
+            </div>
+          </div>
+          <div id="matchupChart" class="plot matchup-plot"></div>
+          <p id="matchupInference" class="matchup-inference"></p>
+        </section>
+
+        <section class="storytelling-track intro-seq" id="storySection">
+          <article class="story-card glass reveal">
+            <p class="hero-kicker">Story 01</p>
+            <h3>The headline certainty shrinks under realistic noise</h3>
+            <p>
+              Standard leaderboard significance treats all votes as IID, but your
+              hierarchical model reclassifies a major share of frontier gaps as
+              statistically indistinguishable.
+            </p>
+          </article>
+          <article class="story-card glass reveal">
+            <p class="hero-kicker">Story 02</p>
+            <h3>Most uncertainty is structural, not sampling noise</h3>
+            <p>
+              Variance is dominated by interaction effects, so collecting more
+              battles alone will not solve confidence inflation in close matchups.
+            </p>
+          </article>
+          <article class="story-card glass reveal">
+            <p class="hero-kicker">Story 03</p>
+            <h3>Fragility concentrates among top-tier model comparisons</h3>
+            <p>
+              Flipped pairs cluster around strongest models, which is where
+              benchmark-based procurement and deployment choices are most sensitive.
+            </p>
+          </article>
+        </section>
+      </main>
+    </div>
+    <script src="./app.js"></script>
+  </body>
+</html>

@@ -102,3 +102,45 @@ A strong A-grade submission will have:
 - Every math claim cross-checked numerically
 - Xu et al. (2026) explicitly cited and differentiated on all three deltas
 - A ≤10-minute presentation that has been rehearsed end-to-end
+
+---
+
+## Interactive Dashboard (GitHub Pages)
+
+An interactive, presentation-ready dashboard is available in `docs/` and can be
+hosted directly with GitHub Pages.
+
+### Features
+
+- Glassmorphism light UI with animated neural-network background
+- Left-side control panel for confidence level, model count, model focus, and variance view
+- Interactive plots for:
+  - Significant-pair survival sensitivity
+  - Variance decomposition by model
+  - Flipped-pair fragility hotspots
+- Arena-style model-vs-model matchup explorer with live duel inference
+- Scroll-based storytelling cards with reveal animation for presentation flow
+- Staged intro animation timeline for a cinematic opening sequence
+- Color and spacing micro-tuning for projector contrast in presentation mode
+- One-click presentation mode (or press `P`) optimized for classroom demo screens
+- Dedicated TA/Professor Quick Tour auto-scroll flow (button or press `T`)
+- Speaker notes overlay for live presenting (auto-updates by section, press `N` to toggle)
+- Auto-generated inference text that adapts to selected parameters
+
+### Local preview
+
+From repository root, run a static file server and open `docs/index.html`:
+
+```bash
+python -m http.server 8000
+```
+
+Then visit `http://localhost:8000/docs/`.
+
+### Deploy on GitHub Pages
+
+1. Push the repository to GitHub.
+2. In the repository settings, open **Pages**.
+3. Set source to **Deploy from a branch**.
+4. Select your branch (typically `main`) and folder **`/docs`**.
+5. Save; your dashboard will be published automatically.
