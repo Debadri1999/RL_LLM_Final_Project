@@ -108,6 +108,43 @@ body.presentation-mode .speaker-notes-overlay.notes-visible {
   padding: 1.2rem;
 }
 
+.top-nav {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.62rem 0.9rem;
+  border-radius: 14px;
+}
+
+.top-brand {
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+.top-links {
+  display: flex;
+  gap: 1.1rem;
+}
+
+.top-links a {
+  text-decoration: none;
+  color: #334155;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.top-cta {
+  border: 1px solid #111827;
+  background: #111827;
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.45rem 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 .glass {
   background: var(--card);
   border: 1px solid var(--border);
@@ -230,10 +267,11 @@ select {
 
 .hero {
   padding: 1.35rem 1.3rem 1.18rem;
+  text-align: center;
 }
 
 .hero h2 {
-  margin: 0.38rem 0 0.5rem;
+  margin: 0.38rem auto 0.5rem;
   font-size: clamp(2rem, 4.25vw, 3.35rem);
   line-height: 0.98;
   letter-spacing: -0.055em;
@@ -242,6 +280,71 @@ select {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+.hero-badge {
+  display: inline-block;
+  margin-bottom: 0.32rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #6d28d9;
+}
+
+.hero-gradient {
+  color: inherit;
+}
+
+.hero-subcopy {
+  margin: 0 auto 0.62rem;
+  color: #475569;
+  font-size: 1rem;
+  max-width: 64ch;
+}
+
+.hero-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-bottom: 0.62rem;
+}
+
+.hero-btn {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  border-radius: 999px;
+  padding: 0.48rem 0.9rem;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.hero-btn.primary {
+  border-color: #111827;
+  background: #111827;
+  color: #fff;
+}
+
+.hero-chip-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.44rem;
+  margin-bottom: 0.66rem;
+}
+
+.hero-chip-row span {
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  padding: 0.26rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  color: #475569;
+  font-weight: 600;
 }
 
 #heroInference {
@@ -555,6 +658,22 @@ body.presentation-mode .storytelling-track {
 @media (max-width: 1120px) {
   .app-shell {
     grid-template-columns: 1fr;
+  }
+
+  .top-nav {
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .top-links {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: center;
   }
 
   .viz-grid {

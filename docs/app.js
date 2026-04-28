@@ -49,6 +49,9 @@ const els = {
   viewMetricSelect: document.getElementById("viewMetricSelect"),
   presentationModeBtn: document.getElementById("presentationModeBtn"),
   quickTourBtn: document.getElementById("quickTourBtn"),
+  quickTourBtnTop: document.getElementById("quickTourBtnTop"),
+  quickTourHeroBtn: document.getElementById("quickTourHeroBtn"),
+  presentationHeroBtn: document.getElementById("presentationHeroBtn"),
   speakerNotesOverlay: document.getElementById("speakerNotesOverlay"),
   speakerNotesToggleBtn: document.getElementById("speakerNotesToggleBtn"),
   speakerNotesTitle: document.getElementById("speakerNotesTitle"),
@@ -618,6 +621,24 @@ function attachListeners(data) {
   els.quickTourBtn.addEventListener("click", () => {
     runQuickTour();
   });
+
+  if (els.quickTourBtnTop) {
+    els.quickTourBtnTop.addEventListener("click", () => {
+      runQuickTour();
+    });
+  }
+
+  if (els.quickTourHeroBtn) {
+    els.quickTourHeroBtn.addEventListener("click", () => {
+      runQuickTour();
+    });
+  }
+
+  if (els.presentationHeroBtn) {
+    els.presentationHeroBtn.addEventListener("click", () => {
+      applyPresentationMode(!state.presentationMode);
+    });
+  }
 
   els.speakerNotesToggleBtn.addEventListener("click", () => {
     toggleSpeakerNotes();

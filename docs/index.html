@@ -27,6 +27,16 @@
       <p id="speakerNotesHint">Shortcut: press N to toggle notes.</p>
     </aside>
     <div class="app-shell">
+      <header class="top-nav glass">
+        <div class="top-brand">ArenaScope</div>
+        <nav class="top-links">
+          <a href="#heroSection">Overview</a>
+          <a href="#coreVizSection">Findings</a>
+          <a href="#matchupSection">Matchups</a>
+          <a href="#storySection">Insights</a>
+        </nav>
+        <button class="top-cta" type="button" id="quickTourBtnTop">Explore</button>
+      </header>
       <aside class="control-panel glass">
         <div class="brand-block">
           <p class="brand-kicker">MGMT 590 | RL-LLM</p>
@@ -98,8 +108,29 @@
 
       <main class="main-content">
         <section class="hero glass intro-seq" id="heroSection">
+          <p class="hero-badge">About</p>
           <p class="hero-kicker">Data-Driven Story</p>
-          <h2>How much leaderboard certainty survives robust noise modeling?</h2>
+          <h2>
+            LLM leaderboard certainty
+            <span class="hero-gradient">that actually survives</span>
+          </h2>
+          <p class="hero-subcopy">
+            Fast, reliable, and audit-ready significance analysis for Arena-140k.
+          </p>
+          <div class="hero-actions">
+            <button class="hero-btn primary" type="button" id="quickTourHeroBtn">
+              Start Tour
+            </button>
+            <button class="hero-btn" type="button" id="presentationHeroBtn">
+              Presentation Mode
+            </button>
+          </div>
+          <div class="hero-chip-row">
+            <span>Pair-Heterogeneous</span>
+            <span>Variance Decomposition</span>
+            <span>Fragility Audit</span>
+            <span>Model Matchups</span>
+          </div>
           <p id="heroInference"></p>
         </section>
 
