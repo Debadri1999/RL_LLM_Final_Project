@@ -11,6 +11,7 @@ const state = {
   varianceView: "absolute",
   matchupModelA: "",
   matchupModelB: "",
+  matchupView: "bar",
   presentationMode: false,
   quickTourRunning: false,
   quickTourAbort: false,
@@ -58,6 +59,7 @@ const els = {
   speakerNotesBody: document.getElementById("speakerNotesBody"),
   matchupModelA: document.getElementById("matchupModelA"),
   matchupModelB: document.getElementById("matchupModelB"),
+  matchupViewSelect: document.getElementById("matchupViewSelect"),
   duelNameA: document.getElementById("duelNameA"),
   duelNameB: document.getElementById("duelNameB"),
   duelSignalA: document.getElementById("duelSignalA"),
@@ -65,6 +67,9 @@ const els = {
   duelCardA: document.getElementById("duelCardA"),
   duelCardB: document.getElementById("duelCardB"),
   matchupInference: document.getElementById("matchupInference"),
+  matchupWinInference: document.getElementById("matchupWinInference"),
+  matchupRobustInference: document.getElementById("matchupRobustInference"),
+  matchupRiskInference: document.getElementById("matchupRiskInference"),
   stdPairs: document.getElementById("stdPairs"),
   hierPairs: document.getElementById("hierPairs"),
   survivalRate: document.getElementById("survivalRate"),
@@ -422,35 +427,63 @@ function renderMatchupExplorer(data) {
   els.duelCardB.classList.toggle("leading", !leaderA);
   els.duelCardB.classList.toggle("trailing", leaderA);
 
-  Plotly.react(
-    "matchupChart",
-    [
-      {
-        x: ["Win probability", "Robustness under noise", "Interaction risk"],
-        y: [winProbA * 100, 100 - uncertaintyA, modelA.pct_interaction],
-        type: "bar",
-        name: modelA.model,
-        marker: { color: "#6366f1" },
-      },
-      {
-        x: ["Win probability", "Robustness under noise", "Interaction risk"],
-        y: [winProbB * 100, 100 - uncertaintyB, modelB.pct_interaction],
-        type: "bar",
-        name: modelB.model,
-        marker: { color: "#06b6d4" },
-      },
-    ],
+  const chartType = state.matchupView === "line" ? "scatter" : "bar";
+  const modeLine = state.matchupView === "line" ? "lines+markers" : undefined;
+  const sharedLayout = {
+    margin: { l: 58, r: 18, t: 8, b: 58 },
+    paper_bgcolor: "rgba(0,0,0,0)",
+    plot_bgcolor: "rgba(255,255,255,0.62)",
+    yaxis: { title: "Score (%)", gridcolor: "#dbeafe", range: [0, 100] },
+    xaxis: { title: "Model", gridcolor: "#eff6ff" },
+    legend: { orientation: "h", y: 1.18, x: 0 },
+  };
+
+  const tracesWin = [
     {
-      barmode: "group",
-      margin: { l: 55, r: 20, t: 8, b: 55 },
-      paper_bgcolor: "rgba(0,0,0,0)",
-      plot_bgcolor: "rgba(255,255,255,0.62)",
-      yaxis: { title: "Score (%)", gridcolor: "#dbeafe", range: [0, 100] },
-      xaxis: { gridcolor: "#eff6ff" },
-      legend: { orientation: "h", y: 1.16, x: 0 },
+      x: [modelA.model, modelB.model],
+      y: [winProbA * 100, winProbB * 100],
+      type: chartType,
+      mode: modeLine,
+      name: "Win Probability",
+      marker: { color: "#6366f1" },
+      line: { color: "#6366f1", width: 3 },
     },
-    { responsive: true, displayModeBar: false }
-  );
+  ];
+  const tracesRobust = [
+    {
+      x: [modelA.model, modelB.model],
+      y: [a.robustness, b.robustness],
+      type: chartType,
+      mode: modeLine,
+      name: "Robustness",
+      marker: { color: "#0ea5e9" },
+      line: { color: "#0ea5e9", width: 3 },
+    },
+  ];
+  const tracesRisk = [
+    {
+      x: [modelA.model, modelB.model],
+      y: [uncertaintyA, uncertaintyB],
+      type: chartType,
+      mode: modeLine,
+      name: "Interaction Risk",
+      marker: { color: "#ef4444" },
+      line: { color: "#ef4444", width: 3 },
+    },
+  ];
+
+  Plotly.react("matchupWinChart", tracesWin, sharedLayout, {
+    responsive: true,
+    displayModeBar: false,
+  });
+  Plotly.react("matchupRobustChart", tracesRobust, sharedLayout, {
+    responsive: true,
+    displayModeBar: false,
+  });
+  Plotly.react("matchupRiskChart", tracesRisk, sharedLayout, {
+    responsive: true,
+    displayModeBar: false,
+  });
 
   const favoredModel = leaderA ? modelA.model : modelB.model;
   const favoredProb = leaderA ? winProbA : winProbB;
@@ -463,6 +496,18 @@ function renderMatchupExplorer(data) {
   els.matchupInference.textContent =
     `At ${state.confidence}% confidence, ${favoredModel} has a ${gapLabel} with estimated matchup win probability ` +
     `${(favoredProb * 100).toFixed(1)}%. Higher interaction-risk models are more likely to lose significance under robust uncertainty modeling.`;
+  els.matchupWinInference.textContent =
+    `Win-probability gap is ${Math.abs(winProbA - winProbB) * 100 >= 10 ? "substantial" : "narrow"} at ${Math.abs(
+      winProbA - winProbB
+    ).toFixed(2)} probability points.`;
+  els.matchupRobustInference.textContent =
+    `Robustness differs by ${Math.abs(a.robustness - b.robustness).toFixed(
+      1
+    )} points under the current uncertainty model.`;
+  els.matchupRiskInference.textContent =
+    `Interaction-risk gap is ${Math.abs(uncertaintyA - uncertaintyB).toFixed(
+      1
+    )} points; higher values indicate more fragile significance claims.`;
 }
 
 function setupScrollReveal() {
@@ -631,6 +676,13 @@ function attachListeners(data) {
     }
     renderMatchupExplorer(data);
   });
+
+  if (els.matchupViewSelect) {
+    els.matchupViewSelect.addEventListener("change", (e) => {
+      state.matchupView = e.target.value;
+      renderMatchupExplorer(data);
+    });
+  }
 
   els.presentationModeBtn.addEventListener("click", () => {
     applyPresentationMode(!state.presentationMode);

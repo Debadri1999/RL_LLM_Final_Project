@@ -170,6 +170,13 @@
               <label for="matchupModelB">Model B</label>
               <select id="matchupModelB"></select>
             </div>
+            <div class="matchup-view-control">
+              <label for="matchupViewSelect">Graph View</label>
+              <select id="matchupViewSelect">
+                <option value="bar" selected>Bar View</option>
+                <option value="line">Line View</option>
+              </select>
+            </div>
           </div>
           <div class="matchup-main">
             <div class="duel-card" id="duelCardA">
@@ -184,8 +191,32 @@
               <p id="duelSignalB"></p>
             </div>
           </div>
-          <div id="matchupChart" class="plot matchup-plot"></div>
-          <p id="matchupInference" class="matchup-inference"></p>
+          <div class="matchup-metric-grid">
+            <article class="glass metric-mini-panel">
+              <h4>Win Probability Comparison</h4>
+              <div id="matchupWinChart" class="plot matchup-plot"></div>
+              <div class="glass inference-glass-card">
+                <p class="matchup-inference" id="matchupWinInference"></p>
+              </div>
+            </article>
+            <article class="glass metric-mini-panel">
+              <h4>Robustness Under Noise</h4>
+              <div id="matchupRobustChart" class="plot matchup-plot"></div>
+              <div class="glass inference-glass-card">
+                <p class="matchup-inference" id="matchupRobustInference"></p>
+              </div>
+            </article>
+            <article class="glass metric-mini-panel">
+              <h4>Interaction Risk Profile</h4>
+              <div id="matchupRiskChart" class="plot matchup-plot"></div>
+              <div class="glass inference-glass-card">
+                <p class="matchup-inference" id="matchupRiskInference"></p>
+              </div>
+            </article>
+          </div>
+          <div class="glass inference-glass-card matchup-summary-card">
+            <p id="matchupInference" class="matchup-inference"></p>
+          </div>
         </section>
 
         <section class="storytelling-track intro-seq" id="storySection">

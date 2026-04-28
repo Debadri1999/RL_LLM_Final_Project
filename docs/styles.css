@@ -9,6 +9,18 @@
   --shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
   --projector-card: rgba(255, 255, 255, 0.86);
   --projector-border: rgba(203, 213, 225, 0.95);
+  --glass-gradient: linear-gradient(
+    140deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(239, 246, 255, 0.78) 55%,
+    rgba(254, 242, 242, 0.75) 100%
+  );
+  --glass-gradient-strong: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(229, 241, 255, 0.9) 52%,
+    rgba(255, 238, 242, 0.88) 100%
+  );
 }
 
 * {
@@ -120,6 +132,10 @@ body.presentation-mode .speaker-notes-overlay.notes-visible {
 .top-brand {
   font-weight: 800;
   font-size: 1rem;
+  background: linear-gradient(90deg, #111827 0%, #4f46e5 46%, #be185d 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .top-links {
@@ -146,7 +162,7 @@ body.presentation-mode .speaker-notes-overlay.notes-visible {
 }
 
 .glass {
-  background: var(--card);
+  background: var(--glass-gradient);
   border: 1px solid var(--border);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -176,6 +192,10 @@ h1 {
   font-size: clamp(1.65rem, 2.3vw, 2.18rem);
   line-height: 1.02;
   letter-spacing: -0.03em;
+  background: linear-gradient(90deg, #111827 0%, #4f46e5 52%, #be185d 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .brand-subtitle {
@@ -365,7 +385,7 @@ select {
 .panel {
   min-height: 300px;
   padding: 0.95rem;
-  background: #ffffff;
+  background: var(--glass-gradient-strong);
   border-color: #e2e8f0;
   box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
 }
@@ -405,7 +425,7 @@ select {
 .matchup-section {
   margin-top: 1rem;
   padding: 1rem;
-  background: #ffffff;
+  background: var(--glass-gradient-strong);
   border-color: #e2e8f0;
   box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
 }
@@ -424,9 +444,13 @@ select {
 
 .matchup-controls {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 0.8rem;
   margin-top: 0.75rem;
+}
+
+.matchup-view-control {
+  align-self: end;
 }
 
 .matchup-main {
@@ -438,7 +462,7 @@ select {
 }
 
 .duel-card {
-  background: #ffffff;
+  background: var(--glass-gradient);
   border: 1px solid #e2e8f0;
   border-radius: 16px;
   padding: 0.75rem;
@@ -477,13 +501,47 @@ select {
 
 .matchup-plot {
   margin-top: 0.5rem;
-  height: 220px;
+  height: 210px;
+}
+
+.matchup-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.8rem;
+}
+
+.metric-mini-panel {
+  padding: 0.7rem;
+  background: var(--glass-gradient-strong);
+}
+
+.metric-mini-panel h4 {
+  margin: 0 0 0.32rem;
+  font-size: 0.95rem;
+  background: linear-gradient(90deg, #111827 0%, #4f46e5 56%, #be185d 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .matchup-inference {
-  margin: 0.45rem 0 0;
+  margin: 0;
   font-size: 0.96rem;
   color: #1f2937;
+  line-height: 1.42;
+}
+
+.inference-glass-card {
+  margin-top: 0.5rem;
+  padding: 0.56rem 0.62rem;
+  border-radius: 12px;
+  background: var(--glass-gradient);
+  border: 1px solid #dbeafe;
+}
+
+.matchup-summary-card {
+  margin-top: 0.7rem;
 }
 
 .storytelling-track {
@@ -494,7 +552,7 @@ select {
 
 .story-card {
   padding: 1rem;
-  background: #ffffff;
+  background: var(--glass-gradient-strong);
   border-color: #e2e8f0;
   box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
 }
@@ -503,6 +561,22 @@ select {
 .story-card p,
 .story-card .hero-kicker {
   color: #1f2937;
+}
+
+.story-card h3,
+.panel h3,
+.matchup-header h3 {
+  background: linear-gradient(90deg, #111827 0%, #4f46e5 54%, #be185d 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+strong {
+  background: linear-gradient(90deg, #0f172a 0%, #4f46e5 50%, #be185d 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .story-card h3 {
@@ -683,6 +757,10 @@ body.presentation-mode .storytelling-track {
 
   .matchup-controls,
   .matchup-main {
+    grid-template-columns: 1fr;
+  }
+
+  .matchup-metric-grid {
     grid-template-columns: 1fr;
   }
 
