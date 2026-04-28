@@ -17,6 +17,14 @@ const state = {
   quickTourAbort: false,
   speakerNotesVisible: true,
   activeSectionId: "heroSection",
+  axisModes: {
+    survival: "auto",
+    variance: "auto",
+    flipped: "auto",
+    matchupWin: "auto",
+    matchupRobust: "auto",
+    matchupRisk: "auto",
+  },
 };
 
 const zByConfidence = {
@@ -198,6 +206,21 @@ function renderSurvivalSensitivity(data) {
     );
   });
 
+  const yvals = [...stdSeries, ...hierSeries];
+  const minY = Math.min(...yvals);
+  const maxY = Math.max(...yvals);
+  const mode = state.axisModes.survival || "auto";
+  const yaxis =
+    mode === "fixed"
+      ? { title: "Estimated significant pairs", gridcolor: "#dbeafe", range: [0, 220] }
+      : mode === "center"
+      ? {
+          title: "Estimated significant pairs",
+          gridcolor: "#dbeafe",
+          range: [Math.max(0, minY - 20), maxY + 20],
+        }
+      : { title: "Estimated significant pairs", gridcolor: "#dbeafe", autorange: true };
+
   Plotly.react(
     "survivalChart",
     [
@@ -223,7 +246,7 @@ function renderSurvivalSensitivity(data) {
       paper_bgcolor: "rgba(0,0,0,0)",
       plot_bgcolor: "rgba(255,255,255,0.62)",
       xaxis: { title: "Confidence level (%)", gridcolor: "#dbeafe" },
-      yaxis: { title: "Estimated significant pairs", gridcolor: "#dbeafe" },
+      yaxis,
       legend: { orientation: "h", y: 1.14, x: 0 },
     },
     { responsive: true, displayModeBar: false }
@@ -262,6 +285,20 @@ function renderVarianceChart(data) {
     },
   ].map((t) => ({ ...t, x, type: "bar" }));
 
+  const stackedMax = ranked.reduce((mx, r) => {
+    const total = isPct
+      ? r.pct_sampling + r.pct_prompt + r.pct_distance + r.pct_interaction
+      : r.V_sampling + r.V_prompt + r.V_distance + r.V_interaction;
+    return Math.max(mx, total);
+  }, 0);
+  const mode = state.axisModes.variance || "auto";
+  const yaxis =
+    mode === "fixed"
+      ? { title: isPct ? "Variance share (%)" : "Variance magnitude", gridcolor: "#e2e8f0", range: isPct ? [0, 100] : [0, Math.max(0.6, stackedMax * 1.15)] }
+      : mode === "center"
+      ? { title: isPct ? "Variance share (%)" : "Variance magnitude", gridcolor: "#e2e8f0", range: [0, stackedMax * 1.2] }
+      : { title: isPct ? "Variance share (%)" : "Variance magnitude", gridcolor: "#e2e8f0", autorange: true };
+
   Plotly.react(
     "varianceStackedChart",
     traces,
@@ -275,10 +312,7 @@ function renderVarianceChart(data) {
         title: "Model",
         gridcolor: "#e2e8f0",
       },
-      yaxis: {
-        title: isPct ? "Variance share (%)" : "Variance magnitude",
-        gridcolor: "#e2e8f0",
-      },
+      yaxis,
       legend: { orientation: "h", y: 1.14, x: 0 },
     },
     { responsive: true, displayModeBar: false }
@@ -293,6 +327,15 @@ function renderFlippedChart(data) {
   }, {});
 
   const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+
+  const mode = state.axisModes.flipped || "auto";
+  const maxY = Math.max(...sorted.map((d) => d[1]), 1);
+  const yaxis =
+    mode === "fixed"
+      ? { title: "Flipped wins count", gridcolor: "#dbeafe", range: [0, 12] }
+      : mode === "center"
+      ? { title: "Flipped wins count", gridcolor: "#dbeafe", range: [0, maxY + 2] }
+      : { title: "Flipped wins count", gridcolor: "#dbeafe", autorange: true };
 
   Plotly.react(
     "flippedChart",
@@ -309,7 +352,7 @@ function renderFlippedChart(data) {
       paper_bgcolor: "rgba(0,0,0,0)",
       plot_bgcolor: "rgba(255,255,255,0.62)",
       xaxis: { tickangle: -28, title: "Model", gridcolor: "#dbeafe" },
-      yaxis: { title: "Flipped wins count", gridcolor: "#dbeafe" },
+      yaxis,
     },
     { responsive: true, displayModeBar: false }
   );
@@ -378,6 +421,13 @@ function logistic(x) {
 }
 
 function renderMatchupExplorer(data) {
+  const buildYaxis = (modeKey, fallbackMax = 100) => {
+    const mode = state.axisModes[modeKey] || "auto";
+    if (mode === "fixed") return { title: "Score (%)", gridcolor: "#dbeafe", range: [0, 100] };
+    if (mode === "center") return { title: "Score (%)", gridcolor: "#dbeafe", range: [0, Math.min(100, fallbackMax * 1.2)] };
+    return { title: "Score (%)", gridcolor: "#dbeafe", autorange: true };
+  };
+
   const modelA = data.varianceRows.find((r) => r.model === state.matchupModelA);
   const modelB = data.varianceRows.find((r) => r.model === state.matchupModelB);
   if (!modelA || !modelB || modelA.model === modelB.model) {
@@ -433,7 +483,7 @@ function renderMatchupExplorer(data) {
     margin: { l: 58, r: 18, t: 8, b: 58 },
     paper_bgcolor: "rgba(0,0,0,0)",
     plot_bgcolor: "rgba(255,255,255,0.62)",
-    yaxis: { title: "Score (%)", gridcolor: "#dbeafe", range: [0, 100] },
+    yaxis: buildYaxis("matchupWin", Math.max(winProbA * 100, winProbB * 100)),
     xaxis: { title: "Model", gridcolor: "#eff6ff" },
     legend: { orientation: "h", y: 1.18, x: 0 },
   };
@@ -476,11 +526,11 @@ function renderMatchupExplorer(data) {
     responsive: true,
     displayModeBar: false,
   });
-  Plotly.react("matchupRobustChart", tracesRobust, sharedLayout, {
+  Plotly.react("matchupRobustChart", tracesRobust, { ...sharedLayout, yaxis: buildYaxis("matchupRobust", Math.max(a.robustness, b.robustness)) }, {
     responsive: true,
     displayModeBar: false,
   });
-  Plotly.react("matchupRiskChart", tracesRisk, sharedLayout, {
+  Plotly.react("matchupRiskChart", tracesRisk, { ...sharedLayout, yaxis: buildYaxis("matchupRisk", Math.max(uncertaintyA, uncertaintyB)) }, {
     responsive: true,
     displayModeBar: false,
   });
@@ -633,6 +683,45 @@ function setupSectionTracking() {
 }
 
 function attachListeners(data) {
+  const bindAxisControl = (selectId, resetId, key, rerender) => {
+    const sel = document.getElementById(selectId);
+    const reset = document.getElementById(resetId);
+    if (sel) {
+      sel.addEventListener("change", (e) => {
+        state.axisModes[key] = e.target.value;
+        rerender();
+      });
+    }
+    if (reset) {
+      reset.addEventListener("click", () => {
+        state.axisModes[key] = "center";
+        if (sel) sel.value = "center";
+        rerender();
+      });
+    }
+  };
+
+  bindAxisControl("survivalAxisMode", "survivalAxisReset", "survival", () =>
+    renderSurvivalSensitivity(data)
+  );
+  bindAxisControl("varianceAxisMode", "varianceAxisReset", "variance", () =>
+    renderVarianceChart(data)
+  );
+  bindAxisControl("flippedAxisMode", "flippedAxisReset", "flipped", () =>
+    renderFlippedChart(data)
+  );
+  bindAxisControl("matchupWinAxisMode", "matchupWinAxisReset", "matchupWin", () =>
+    renderMatchupExplorer(data)
+  );
+  bindAxisControl(
+    "matchupRobustAxisMode",
+    "matchupRobustAxisReset",
+    "matchupRobust",
+    () => renderMatchupExplorer(data)
+  );
+  bindAxisControl("matchupRiskAxisMode", "matchupRiskAxisReset", "matchupRisk", () =>
+    renderMatchupExplorer(data)
+  );
   els.confidenceSlider.addEventListener("input", (e) => {
     state.confidence = Number(e.target.value);
     els.confidenceLabel.textContent = `${state.confidence}%`;

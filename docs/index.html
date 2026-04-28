@@ -137,17 +137,65 @@
         <section class="viz-grid intro-seq" id="coreVizSection">
           <article class="glass panel">
             <h3>Significant Pair Survival Under Confidence Sensitivity</h3>
+            <div class="axis-controls">
+              <label for="survivalAxisMode">Axis Mode</label>
+              <select id="survivalAxisMode">
+                <option value="auto" selected>Auto Fit</option>
+                <option value="center">Centered</option>
+                <option value="fixed">Fixed Range</option>
+              </select>
+              <button class="axis-reset-btn" type="button" id="survivalAxisReset">Refit Center</button>
+            </div>
             <div id="survivalChart" class="plot"></div>
+            <details class="axis-details">
+              <summary>Axis Meaning, Formula, and Interpretation</summary>
+              <p><strong>X-axis:</strong> Confidence threshold (%), from 80 to 99.</p>
+              <p><strong>Y-axis:</strong> Estimated number of pairwise gaps that remain statistically significant.</p>
+              <p><strong>Formula:</strong> \(\hat{N}_{std}(c) \approx N_{std,95}(z_{95}/z_c)^{1.05}\), \(\hat{N}_{hier}(c) \approx N_{hier,95}(z_{95}/z_c)^{1.12}\).</p>
+              <p><strong>Inference:</strong> As confidence strictness rises, both curves fall; the hierarchical curve falls faster, revealing fragility hidden under standard BTL assumptions.</p>
+            </details>
           </article>
 
           <article class="glass panel">
             <h3>Variance Decomposition Across Models</h3>
+            <div class="axis-controls">
+              <label for="varianceAxisMode">Axis Mode</label>
+              <select id="varianceAxisMode">
+                <option value="auto" selected>Auto Fit</option>
+                <option value="center">Centered</option>
+                <option value="fixed">Fixed Range</option>
+              </select>
+              <button class="axis-reset-btn" type="button" id="varianceAxisReset">Refit Center</button>
+            </div>
             <div id="varianceStackedChart" class="plot"></div>
+            <details class="axis-details">
+              <summary>Axis Meaning, Formula, and Interpretation</summary>
+              <p><strong>X-axis:</strong> Model names (filtered by Top-N control).</p>
+              <p><strong>Y-axis:</strong> Either absolute variance component values or percent share.</p>
+              <p><strong>Formula:</strong> \(V_{total} \approx V_{sampling}+V_{prompt}+V_{distance}+V_{interaction}\).</p>
+              <p><strong>Inference:</strong> Large interaction segments indicate structural uncertainty dominates simple sampling noise for many frontier models.</p>
+            </details>
           </article>
 
           <article class="glass panel">
             <h3>Top Flipped Winners (Fragility Hotspots)</h3>
+            <div class="axis-controls">
+              <label for="flippedAxisMode">Axis Mode</label>
+              <select id="flippedAxisMode">
+                <option value="auto" selected>Auto Fit</option>
+                <option value="center">Centered</option>
+                <option value="fixed">Fixed Range</option>
+              </select>
+              <button class="axis-reset-btn" type="button" id="flippedAxisReset">Refit Center</button>
+            </div>
             <div id="flippedChart" class="plot"></div>
+            <details class="axis-details">
+              <summary>Axis Meaning, Formula, and Interpretation</summary>
+              <p><strong>X-axis:</strong> Winner model under standard BTL among flipped pairs.</p>
+              <p><strong>Y-axis:</strong> Count of flipped wins that disappear under hierarchical uncertainty.</p>
+              <p><strong>Formula:</strong> count\((winner\_model\_under\_standard)\) over flipped pair set.</p>
+              <p><strong>Inference:</strong> Taller bars identify where standard-significant claims are most vulnerable to robust uncertainty correction.</p>
+            </details>
           </article>
 
           <article class="glass panel inference-panel">
@@ -194,24 +242,72 @@
           <div class="matchup-metric-grid">
             <article class="glass metric-mini-panel">
               <h4>Win Probability Comparison</h4>
+              <div class="axis-controls">
+                <label for="matchupWinAxisMode">Axis Mode</label>
+                <select id="matchupWinAxisMode">
+                  <option value="auto" selected>Auto Fit</option>
+                  <option value="center">Centered</option>
+                  <option value="fixed">Fixed Range</option>
+                </select>
+                <button class="axis-reset-btn" type="button" id="matchupWinAxisReset">Refit Center</button>
+              </div>
               <div id="matchupWinChart" class="plot matchup-plot"></div>
               <div class="glass inference-glass-card">
                 <p class="matchup-inference" id="matchupWinInference"></p>
               </div>
+              <details class="axis-details">
+                <summary>Axis Meaning, Formula, and Interpretation</summary>
+                <p><strong>X-axis:</strong> Selected Model A and Model B.</p>
+                <p><strong>Y-axis:</strong> Estimated matchup win probability (%).</p>
+                <p><strong>Formula:</strong> \(p_A=\sigma((S_A-S_B)\cdot 3.6-penalty)\), \(p_B=1-p_A\).</p>
+                <p><strong>Inference:</strong> Wider separation means stronger directional confidence in the matchup.</p>
+              </details>
             </article>
             <article class="glass metric-mini-panel">
               <h4>Robustness Under Noise</h4>
+              <div class="axis-controls">
+                <label for="matchupRobustAxisMode">Axis Mode</label>
+                <select id="matchupRobustAxisMode">
+                  <option value="auto" selected>Auto Fit</option>
+                  <option value="center">Centered</option>
+                  <option value="fixed">Fixed Range</option>
+                </select>
+                <button class="axis-reset-btn" type="button" id="matchupRobustAxisReset">Refit Center</button>
+              </div>
               <div id="matchupRobustChart" class="plot matchup-plot"></div>
               <div class="glass inference-glass-card">
                 <p class="matchup-inference" id="matchupRobustInference"></p>
               </div>
+              <details class="axis-details">
+                <summary>Axis Meaning, Formula, and Interpretation</summary>
+                <p><strong>X-axis:</strong> Selected Model A and Model B.</p>
+                <p><strong>Y-axis:</strong> Robustness score (%), higher means less uncertainty-driven instability.</p>
+                <p><strong>Formula:</strong> Robustness is normalized from model variance and interaction uncertainty: \((1-\tilde{V}_{total})\) and \((1-pct_{interaction})\).</p>
+                <p><strong>Inference:</strong> Models with higher robustness sustain significance claims better under stricter uncertainty modeling.</p>
+              </details>
             </article>
             <article class="glass metric-mini-panel">
               <h4>Interaction Risk Profile</h4>
+              <div class="axis-controls">
+                <label for="matchupRiskAxisMode">Axis Mode</label>
+                <select id="matchupRiskAxisMode">
+                  <option value="auto" selected>Auto Fit</option>
+                  <option value="center">Centered</option>
+                  <option value="fixed">Fixed Range</option>
+                </select>
+                <button class="axis-reset-btn" type="button" id="matchupRiskAxisReset">Refit Center</button>
+              </div>
               <div id="matchupRiskChart" class="plot matchup-plot"></div>
               <div class="glass inference-glass-card">
                 <p class="matchup-inference" id="matchupRiskInference"></p>
               </div>
+              <details class="axis-details">
+                <summary>Axis Meaning, Formula, and Interpretation</summary>
+                <p><strong>X-axis:</strong> Selected Model A and Model B.</p>
+                <p><strong>Y-axis:</strong> Interaction-risk score (%), proxied by interaction-related uncertainty share.</p>
+                <p><strong>Formula:</strong> Risk \(\approx pct_{interaction}\).</p>
+                <p><strong>Inference:</strong> Higher interaction risk means pairwise conclusions are more likely to flip under robust uncertainty treatment.</p>
+              </details>
             </article>
           </div>
           <div class="glass inference-glass-card matchup-summary-card">
