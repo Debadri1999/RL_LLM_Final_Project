@@ -124,7 +124,8 @@ body.presentation-mode .speaker-notes-overlay.notes-visible {
   grid-column: 1 / -1;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  position: relative;
   padding: 0.62rem 0.9rem;
   border-radius: 14px;
 }
@@ -136,11 +137,15 @@ body.presentation-mode .speaker-notes-overlay.notes-visible {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  position: absolute;
+  left: 0.9rem;
 }
 
 .top-links {
   display: flex;
   gap: 1.1rem;
+  justify-content: center;
+  align-items: center;
 }
 
 .top-links a {
@@ -159,6 +164,8 @@ body.presentation-mode .speaker-notes-overlay.notes-visible {
   font-size: 0.82rem;
   font-weight: 700;
   cursor: pointer;
+  position: absolute;
+  right: 0.9rem;
 }
 
 .glass {
@@ -792,10 +799,16 @@ body.presentation-mode .storytelling-track {
   .top-nav {
     flex-wrap: wrap;
     gap: 0.55rem;
+    justify-content: center;
+  }
+
+  .top-brand,
+  .top-cta {
+    position: static;
   }
 
   .top-links {
-    order: 3;
+    order: 2;
     width: 100%;
     justify-content: center;
   }
