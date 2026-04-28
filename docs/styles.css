@@ -121,7 +121,7 @@ body.presentation-mode .speaker-notes-overlay.notes-visible {
 }
 
 .top-nav {
-  grid-column: 1 / -1;
+  grid-column: 2 / 3;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
@@ -795,6 +795,7 @@ body.presentation-mode .storytelling-track {
   }
 
   .top-nav {
+    grid-column: 1 / -1;
     display: flex;
     flex-wrap: wrap;
     gap: 0.55rem;
