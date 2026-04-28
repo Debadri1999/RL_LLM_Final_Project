@@ -1,16 +1,14 @@
 :root {
-  --bg: #fcfbf8;
-  --text: #12131a;
-  --muted: #62687a;
+  --bg: #f5f8ff;
+  --text: #0f172a;
+  --muted: #475569;
   --accent: #4f46e5;
   --accent-soft: #c7d2fe;
-  --card: rgba(255, 255, 255, 0.84);
-  --border: rgba(229, 231, 235, 0.95);
-  --shadow: 0 10px 32px rgba(15, 23, 42, 0.08);
+  --card: rgba(255, 255, 255, 0.58);
+  --border: rgba(255, 255, 255, 0.76);
+  --shadow: 0 15px 35px rgba(79, 70, 229, 0.12);
   --projector-card: rgba(255, 255, 255, 0.86);
   --projector-border: rgba(203, 213, 225, 0.95);
-  --dark-card: #171717;
-  --dark-border: rgba(255, 255, 255, 0.08);
 }
 
 * {
@@ -20,9 +18,7 @@
 body {
   margin: 0;
   font-family: "Inter", sans-serif;
-  background:
-    radial-gradient(circle at top, rgba(99, 102, 241, 0.08), transparent 32%),
-    linear-gradient(180deg, #fffdfa 0%, #ffffff 34%, #f8fafc 100%);
+  background: linear-gradient(130deg, #eef4ff 0%, #f8fbff 45%, #eef0ff 100%);
   color: var(--text);
 }
 
@@ -103,12 +99,10 @@ body.presentation-mode .speaker-notes-overlay.notes-visible {
 
 .app-shell {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(290px, 340px) 1fr;
   min-height: 100vh;
   gap: 1.2rem;
   padding: 1.2rem;
-  max-width: 1320px;
-  margin: 0 auto;
 }
 
 .glass {
@@ -121,11 +115,10 @@ body.presentation-mode .speaker-notes-overlay.notes-visible {
 }
 
 .control-panel {
-  padding: 0.95rem 1rem;
-  display: grid;
-  grid-template-columns: 280px 1fr auto;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
-  align-items: start;
 }
 
 .brand-kicker,
@@ -140,7 +133,7 @@ body.presentation-mode .speaker-notes-overlay.notes-visible {
 
 h1 {
   margin: 0.45rem 0 0.3rem;
-  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  font-size: clamp(1.8rem, 2.5vw, 2.35rem);
   line-height: 1.05;
 }
 
@@ -154,19 +147,13 @@ h1 {
 .key-numbers h3,
 .panel h3 {
   margin: 0 0 0.65rem;
-  font-size: 0.96rem;
+  font-size: 1rem;
 }
 
 .controls-group {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) auto auto;
-  gap: 0.7rem;
-  align-items: end;
-}
-
-.controls-group h2 {
-  grid-column: 1 / -1;
-  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
 }
 
 .presentation-btn {
@@ -203,28 +190,18 @@ select {
   border-radius: 10px;
   padding: 0.55rem;
   font-size: 0.9rem;
-  background: #ffffff;
-}
-
-.key-numbers {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.55rem;
-}
-
-.key-numbers h3 {
-  display: none;
+  background: #ffffffdd;
 }
 
 .metric-card {
-  background: #ffffff;
+  background: #ffffffd5;
   border: 1px solid #e2e8f0;
   border-radius: 14px;
   padding: 0.6rem 0.75rem;
   display: flex;
-  flex-direction: column;
-  gap: 0.18rem;
-  margin-bottom: 0;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.45rem;
 }
 
 .metric-card span {
@@ -233,7 +210,7 @@ select {
 }
 
 .metric-card strong {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
 }
 
 .metric-card.highlight {
@@ -248,88 +225,21 @@ select {
 }
 
 .hero {
-  padding: 2.9rem 1.4rem 1.8rem;
-  text-align: center;
-  background: transparent;
-  border: none;
-  box-shadow: none;
+  padding: 1rem 1.2rem;
 }
 
 .hero h2 {
-  margin: 0.45rem auto 0.7rem;
-  font-size: clamp(2.5rem, 5vw, 4.75rem);
-  line-height: 0.98;
-  letter-spacing: -0.06em;
-  max-width: 12ch;
-}
-
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 0.5rem;
-  padding: 0.35rem 0.72rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.94);
-  border: 1px solid #f1f5f9;
-  font-size: 0.82rem;
-  color: #8b5cf6;
-  font-weight: 700;
-}
-
-.hero-gradient {
-  background: linear-gradient(90deg, #4361ee 0%, #7c3aed 42%, #ec4899 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.hero-subtitle {
-  max-width: 62ch;
-  margin: 0 auto 1.1rem;
-  color: var(--muted);
-  font-size: 1.02rem;
-  line-height: 1.55;
-}
-
-.hero-stat-strip {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.8rem;
-  max-width: 880px;
-  margin: 0 auto 1rem;
-}
-
-.hero-stat-card {
-  background: rgba(255, 255, 255, 0.98);
-  border: 1px solid #eceff5;
-  border-radius: 22px;
-  padding: 1rem 0.9rem;
-  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.05);
-}
-
-.hero-stat-card strong {
-  display: block;
-  font-size: clamp(1.6rem, 2.2vw, 2.15rem);
-}
-
-.hero-stat-card span {
-  display: block;
-  margin-top: 0.2rem;
-  font-size: 0.88rem;
-  color: var(--muted);
-}
-
-.hero-stat-highlight {
-  background: linear-gradient(180deg, #ffffff 0%, #f5f3ff 100%);
-  border-color: #ddd6fe;
+  margin: 0.4rem 0 0.5rem;
+  font-size: clamp(1.5rem, 3.2vw, 2.7rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
 }
 
 #heroInference {
-  margin: 0 auto;
-  color: #374151;
+  margin: 0;
+  color: #1f2937;
   font-size: 1rem;
-  max-width: 72ch;
+  max-width: 86ch;
 }
 
 .viz-grid {
@@ -340,10 +250,7 @@ select {
 
 .panel {
   min-height: 300px;
-  padding: 1rem;
-  background: var(--dark-card);
-  color: #f8fafc;
-  border: 1px solid var(--dark-border);
+  padding: 0.8rem;
 }
 
 .plot {
@@ -358,16 +265,13 @@ select {
 
 #modelInsight {
   font-size: 0.95rem;
-  color: #e5e7eb;
+  color: #1f2937;
   line-height: 1.5;
 }
 
 .matchup-section {
   margin-top: 1rem;
   padding: 1rem;
-  background: var(--dark-card);
-  color: #f8fafc;
-  border: 1px solid var(--dark-border);
 }
 
 .matchup-header h3 {
@@ -391,8 +295,8 @@ select {
 }
 
 .duel-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #ffffffd8;
+  border: 1px solid #e2e8f0;
   border-radius: 16px;
   padding: 0.75rem;
   min-height: 120px;
@@ -408,7 +312,7 @@ select {
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: #a5b4fc;
+  color: #64748b;
 }
 
 .duel-vs {
@@ -428,96 +332,36 @@ select {
   box-shadow: 0 0 0 2px #fee2e2 inset;
 }
 
-.duel-kpis {
-  margin-top: 0.5rem;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.45rem;
-}
-
-.duel-kpis div {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  padding: 0.38rem 0.42rem;
-}
-
-.duel-kpis span {
-  display: block;
-  font-size: 0.68rem;
-  color: #cbd5e1;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.duel-kpis strong {
-  font-size: 0.9rem;
-}
-
-.matchup-charts {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.8rem;
-  margin-top: 0.6rem;
-}
-
-.mini-panel {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
-  padding: 0.65rem;
-}
-
-.mini-panel h4 {
-  margin: 0.1rem 0 0.25rem;
-  font-size: 0.96rem;
-}
-
 .matchup-plot {
-  margin-top: 0.25rem;
-  height: 200px;
+  margin-top: 0.5rem;
+  height: 220px;
 }
 
 .matchup-inference {
   margin: 0.45rem 0 0;
   font-size: 0.96rem;
-  color: #e2e8f0;
+  color: #1f2937;
 }
 
-.insight-grid {
+.storytelling-track {
   margin-top: 1rem;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.8rem;
+  gap: 0.9rem;
 }
 
-.insight-card {
+.story-card {
   padding: 1rem;
-  background: var(--dark-card);
-  color: #f8fafc;
-  border: 1px solid var(--dark-border);
 }
 
-.insight-card h4 {
-  margin: 0.35rem 0 0.35rem;
-  font-size: 1.05rem;
-  letter-spacing: -0.01em;
+.story-card h3 {
+  margin: 0.35rem 0 0.4rem;
+  font-size: clamp(1.1rem, 2.2vw, 1.55rem);
+  letter-spacing: -0.02em;
 }
 
-.insight-card p {
+.story-card p {
   margin: 0;
-  line-height: 1.42;
-  font-size: 0.93rem;
-  color: #d1d5db;
-}
-
-.section-tag {
-  margin: 0 0 0.35rem;
-  font-size: 0.72rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #c4b5fd;
-  font-weight: 700;
+  line-height: 1.5;
 }
 
 .reveal {
@@ -552,7 +396,7 @@ body.loaded .matchup-section.intro-seq {
   animation-delay: 450ms;
 }
 
-body.loaded .insight-grid.intro-seq {
+body.loaded .storytelling-track.intro-seq {
   animation-delay: 620ms;
 }
 
@@ -592,12 +436,12 @@ body.presentation-mode .plot {
 }
 
 body.presentation-mode .matchup-plot {
-  height: 260px;
+  height: 290px;
 }
 
 body.presentation-mode .panel h3,
 body.presentation-mode .matchup-header h3,
-body.presentation-mode .insight-card h4 {
+body.presentation-mode .story-card h3 {
   font-size: 1.45rem;
 }
 
@@ -621,7 +465,7 @@ body.presentation-mode .duel-card {
   background: #fffffff5;
 }
 
-body.presentation-mode .insight-card p,
+body.presentation-mode .story-card p,
 body.presentation-mode #heroInference,
 body.presentation-mode #matchupInference,
 body.presentation-mode #modelInsight {
@@ -629,8 +473,8 @@ body.presentation-mode #modelInsight {
   font-weight: 500;
 }
 
-body.presentation-mode .insight-grid {
-  gap: 0.65rem;
+body.presentation-mode .storytelling-track {
+  gap: 0.72rem;
 }
 
 @media (max-width: 1120px) {
@@ -638,25 +482,12 @@ body.presentation-mode .insight-grid {
     grid-template-columns: 1fr;
   }
 
-  .control-panel,
-  .controls-group,
-  .key-numbers,
   .viz-grid {
     grid-template-columns: 1fr;
   }
 
-  .hero-stat-strip {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .matchup-controls,
   .matchup-main {
-    grid-template-columns: 1fr;
-  }
-
-  .matchup-charts,
-  .insight-grid,
-  .duel-kpis {
     grid-template-columns: 1fr;
   }
 

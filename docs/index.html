@@ -37,7 +37,7 @@
         </div>
 
         <section class="controls-group">
-          <h2>Interactive Controls</h2>
+          <h2>Control Panel</h2>
           <label for="confidenceSlider"
             >Confidence Level: <span id="confidenceLabel">95%</span></label
           >
@@ -75,63 +75,51 @@
           </button>
         </section>
 
+        <section class="key-numbers">
+          <h3>Live Research Snapshot</h3>
+          <div class="metric-card">
+            <span>Significant Pair Gaps (Std BTL)</span>
+            <strong id="stdPairs">-</strong>
+          </div>
+          <div class="metric-card">
+            <span>Significant Pair Gaps (Hier BTL)</span>
+            <strong id="hierPairs">-</strong>
+          </div>
+          <div class="metric-card highlight">
+            <span>Survival Rate</span>
+            <strong id="survivalRate">-</strong>
+          </div>
+          <div class="metric-card">
+            <span>Flipped Pairs</span>
+            <strong id="flippedPairs">-</strong>
+          </div>
+        </section>
       </aside>
 
       <main class="main-content">
         <section class="hero glass intro-seq" id="heroSection">
-          <p class="hero-badge">Research Dashboard</p>
-          <p class="hero-kicker">Arena-140k | Hierarchical Uncertainty Audit</p>
-          <h2>
-            Which leaderboard claims
-            <span class="hero-gradient">actually survive</span>
-            robust noise modeling?
-          </h2>
-          <p class="hero-subtitle">
-            Interactive evidence for how structured judge noise changes frontier
-            model comparisons, significance claims, and practical leaderboard trust.
-          </p>
-          <div class="hero-stat-strip">
-            <div class="hero-stat-card">
-              <strong id="stdPairs">-</strong>
-              <span>Std. significant pairs</span>
-            </div>
-            <div class="hero-stat-card hero-stat-highlight">
-              <strong id="survivalRate">-</strong>
-              <span>Gap survival rate</span>
-            </div>
-            <div class="hero-stat-card">
-              <strong id="hierPairs">-</strong>
-              <span>Hier. significant pairs</span>
-            </div>
-            <div class="hero-stat-card">
-              <strong id="flippedPairs">-</strong>
-              <span>Reclassified gaps</span>
-            </div>
-          </div>
+          <p class="hero-kicker">Data-Driven Story</p>
+          <h2>How much leaderboard certainty survives robust noise modeling?</h2>
           <p id="heroInference"></p>
         </section>
 
         <section class="viz-grid intro-seq" id="coreVizSection">
           <article class="glass panel">
-            <p class="section-tag">Headline Metric</p>
             <h3>Significant Pair Survival Under Confidence Sensitivity</h3>
             <div id="survivalChart" class="plot"></div>
           </article>
 
           <article class="glass panel">
-            <p class="section-tag">Uncertainty Breakdown</p>
             <h3>Variance Decomposition Across Models</h3>
             <div id="varianceStackedChart" class="plot"></div>
           </article>
 
           <article class="glass panel">
-            <p class="section-tag">Fragility Audit</p>
             <h3>Top Flipped Winners (Fragility Hotspots)</h3>
             <div id="flippedChart" class="plot"></div>
           </article>
 
           <article class="glass panel inference-panel">
-            <p class="section-tag">Model Reading</p>
             <h3>Focused Model Insight</h3>
             <div id="modelInsight"></div>
           </article>
@@ -157,58 +145,43 @@
               <p class="duel-label">Model A</p>
               <h4 id="duelNameA">-</h4>
               <p id="duelSignalA"></p>
-              <div class="duel-kpis">
-                <div><span>Robustness</span><strong id="duelRobustA">-</strong></div>
-                <div><span>Interaction Risk</span><strong id="duelRiskA">-</strong></div>
-                <div><span>Flipped Fragility</span><strong id="duelFlipA">-</strong></div>
-              </div>
             </div>
             <div class="duel-vs">VS</div>
             <div class="duel-card" id="duelCardB">
               <p class="duel-label">Model B</p>
               <h4 id="duelNameB">-</h4>
               <p id="duelSignalB"></p>
-              <div class="duel-kpis">
-                <div><span>Robustness</span><strong id="duelRobustB">-</strong></div>
-                <div><span>Interaction Risk</span><strong id="duelRiskB">-</strong></div>
-                <div><span>Flipped Fragility</span><strong id="duelFlipB">-</strong></div>
-              </div>
             </div>
           </div>
-          <div class="matchup-charts">
-            <article class="mini-panel">
-              <h4>Duel Confidence Split</h4>
-              <div id="matchupChart" class="plot matchup-plot"></div>
-              <p id="matchupInference" class="matchup-inference"></p>
-            </article>
-            <article class="mini-panel">
-              <h4>Uncertainty Profile Comparison</h4>
-              <div id="matchupProfileChart" class="plot matchup-plot"></div>
-              <p id="matchupProfileInference" class="matchup-inference"></p>
-            </article>
-          </div>
+          <div id="matchupChart" class="plot matchup-plot"></div>
+          <p id="matchupInference" class="matchup-inference"></p>
         </section>
 
-        <section class="insight-grid intro-seq" id="storySection">
-          <article class="insight-card glass">
-            <p class="hero-kicker">Insight 01</p>
-            <h4 id="insightTitle1">-</h4>
-            <p id="insightBody1">-</p>
+        <section class="storytelling-track intro-seq" id="storySection">
+          <article class="story-card glass reveal">
+            <p class="hero-kicker">Story 01</p>
+            <h3>The headline certainty shrinks under realistic noise</h3>
+            <p>
+              Standard leaderboard significance treats all votes as IID, but your
+              hierarchical model reclassifies a major share of frontier gaps as
+              statistically indistinguishable.
+            </p>
           </article>
-          <article class="insight-card glass">
-            <p class="hero-kicker">Insight 02</p>
-            <h4 id="insightTitle2">-</h4>
-            <p id="insightBody2">-</p>
+          <article class="story-card glass reveal">
+            <p class="hero-kicker">Story 02</p>
+            <h3>Most uncertainty is structural, not sampling noise</h3>
+            <p>
+              Variance is dominated by interaction effects, so collecting more
+              battles alone will not solve confidence inflation in close matchups.
+            </p>
           </article>
-          <article class="insight-card glass">
-            <p class="hero-kicker">Insight 03</p>
-            <h4 id="insightTitle3">-</h4>
-            <p id="insightBody3">-</p>
-          </article>
-          <article class="insight-card glass">
-            <p class="hero-kicker">Insight 04</p>
-            <h4 id="insightTitle4">-</h4>
-            <p id="insightBody4">-</p>
+          <article class="story-card glass reveal">
+            <p class="hero-kicker">Story 03</p>
+            <h3>Fragility concentrates among top-tier model comparisons</h3>
+            <p>
+              Flipped pairs cluster around strongest models, which is where
+              benchmark-based procurement and deployment choices are most sensitive.
+            </p>
           </article>
         </section>
       </main>

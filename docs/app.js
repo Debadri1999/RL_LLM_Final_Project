@@ -59,30 +59,15 @@ const els = {
   duelNameB: document.getElementById("duelNameB"),
   duelSignalA: document.getElementById("duelSignalA"),
   duelSignalB: document.getElementById("duelSignalB"),
-  duelRobustA: document.getElementById("duelRobustA"),
-  duelRobustB: document.getElementById("duelRobustB"),
-  duelRiskA: document.getElementById("duelRiskA"),
-  duelRiskB: document.getElementById("duelRiskB"),
-  duelFlipA: document.getElementById("duelFlipA"),
-  duelFlipB: document.getElementById("duelFlipB"),
   duelCardA: document.getElementById("duelCardA"),
   duelCardB: document.getElementById("duelCardB"),
   matchupInference: document.getElementById("matchupInference"),
-  matchupProfileInference: document.getElementById("matchupProfileInference"),
   stdPairs: document.getElementById("stdPairs"),
   hierPairs: document.getElementById("hierPairs"),
   survivalRate: document.getElementById("survivalRate"),
   flippedPairs: document.getElementById("flippedPairs"),
   heroInference: document.getElementById("heroInference"),
   modelInsight: document.getElementById("modelInsight"),
-  insightTitle1: document.getElementById("insightTitle1"),
-  insightBody1: document.getElementById("insightBody1"),
-  insightTitle2: document.getElementById("insightTitle2"),
-  insightBody2: document.getElementById("insightBody2"),
-  insightTitle3: document.getElementById("insightTitle3"),
-  insightBody3: document.getElementById("insightBody3"),
-  insightTitle4: document.getElementById("insightTitle4"),
-  insightBody4: document.getElementById("insightBody4"),
 };
 
 const tourSectionIds = ["heroSection", "coreVizSection", "matchupSection", "storySection"];
@@ -183,38 +168,6 @@ function updateKpis(data) {
       100
     ).toFixed(1)}% of currently significant pairwise gaps dissolve once pair-heterogeneous noise is modeled. ` +
     `This highlights that inference fragility is strongest exactly where leaderboard decisions matter most: close frontier-model comparisons.`;
-  updateInsightCards(data, estSurvival, estStdPairs, estHierPairs);
-}
-
-function updateInsightCards(data, estSurvival, estStdPairs, estHierPairs) {
-  const mostUncertain = [...data.varianceRows].sort((a, b) => b.V_total - a.V_total)[0];
-  const mostStable = [...data.varianceRows].sort((a, b) => a.V_total - b.V_total)[0];
-  const meanInteraction =
-    data.varianceRows.reduce((acc, r) => acc + r.pct_interaction, 0) /
-    data.varianceRows.length;
-  const confidenceImpact = Math.abs(data.summary.survival_rate_rho - estSurvival) * 100;
-
-  els.insightTitle1.textContent = "Survival Compression";
-  els.insightBody1.textContent = `${estStdPairs - estHierPairs} pairwise claims drop under hierarchical uncertainty at ${state.confidence}% confidence (survival ${(
-    estSurvival * 100
-  ).toFixed(1)}%).`;
-
-  els.insightTitle2.textContent = "Structural Risk Dominance";
-  els.insightBody2.textContent = `Average interaction-driven uncertainty is ${meanInteraction.toFixed(
-    1
-  )}% across frontier models, showing why IID-style confidence can overstate rank separations.`;
-
-  els.insightTitle3.textContent = "Most Uncertain Frontier Point";
-  els.insightBody3.textContent = `${mostUncertain.model} has the highest total variance (${mostUncertain.V_total.toFixed(
-    3
-  )}), so close ranking claims around it should be interpreted conservatively.`;
-
-  els.insightTitle4.textContent = "Most Stable Baseline";
-  els.insightBody4.textContent = `${mostStable.model} has the lowest total variance (${mostStable.V_total.toFixed(
-    3
-  )}), acting as a useful reference when demonstrating calibration differences (${confidenceImpact.toFixed(
-    1
-  )}pt confidence-sensitivity shift).`;
 }
 
 function renderSurvivalSensitivity(data) {
@@ -407,11 +360,9 @@ function fillModelDropdown(rows) {
 }
 
 function modelStrength(modelRow) {
-  return (
-    modelRow.robustnessScore * 0.55 +
-    (100 - modelRow.pct_interaction) * 0.3 +
-    (100 - modelRow.flippedFragility * 8) * 0.15
-  );
+  const reliability = 1 / (modelRow.V_total + 0.02);
+  const structurePenalty = modelRow.pct_interaction / 120;
+  return reliability - structurePenalty;
 }
 
 function logistic(x) {
@@ -419,30 +370,8 @@ function logistic(x) {
 }
 
 function renderMatchupExplorer(data) {
-  const varianceWithMeta = data.varianceRows.map((r) => {
-    const flipCount =
-      data.flippedRows.filter(
-        (f) =>
-          f.winner_model_under_standard === r.model ||
-          f.loser_model_under_standard === r.model
-      ).length || 0;
-    return { ...r, flippedFragility: flipCount };
-  });
-  const vTotals = varianceWithMeta.map((r) => r.V_total);
-  const minV = Math.min(...vTotals);
-  const maxV = Math.max(...vTotals);
-
-  const enrichedRows = varianceWithMeta.map((r) => {
-    const scaled = (r.V_total - minV) / (maxV - minV + 1e-9);
-    const robustnessScore = Math.max(
-      12,
-      Math.min(96, 100 * (1 - scaled) * 0.65 + (100 - r.pct_interaction) * 0.35)
-    );
-    return { ...r, robustnessScore };
-  });
-
-  const modelA = enrichedRows.find((r) => r.model === state.matchupModelA);
-  const modelB = enrichedRows.find((r) => r.model === state.matchupModelB);
+  const modelA = data.varianceRows.find((r) => r.model === state.matchupModelA);
+  const modelB = data.varianceRows.find((r) => r.model === state.matchupModelB);
   if (!modelA || !modelB || modelA.model === modelB.model) {
     return;
   }
@@ -451,22 +380,20 @@ function renderMatchupExplorer(data) {
   const strengthA = modelStrength(modelA);
   const strengthB = modelStrength(modelB);
   const margin = strengthA - strengthB;
-  const winProbA = logistic(margin * 0.085 - confidencePenalty * 0.22);
+  const winProbA = logistic(margin * 3.6 - confidencePenalty * 0.26);
   const winProbB = 1 - winProbA;
 
-  const uncertaintyA = Math.min(100, modelA.pct_interaction);
-  const uncertaintyB = Math.min(100, modelB.pct_interaction);
+  const uncertaintyA = Math.min(100, modelA.pct_interaction + modelA.pct_sampling);
+  const uncertaintyB = Math.min(100, modelB.pct_interaction + modelB.pct_sampling);
 
   els.duelNameA.textContent = modelA.model;
   els.duelNameB.textContent = modelB.model;
-  els.duelSignalA.textContent = `Total variance: ${modelA.V_total.toFixed(3)}`;
-  els.duelSignalB.textContent = `Total variance: ${modelB.V_total.toFixed(3)}`;
-  els.duelRobustA.textContent = `${modelA.robustnessScore.toFixed(1)}%`;
-  els.duelRobustB.textContent = `${modelB.robustnessScore.toFixed(1)}%`;
-  els.duelRiskA.textContent = `${uncertaintyA.toFixed(1)}%`;
-  els.duelRiskB.textContent = `${uncertaintyB.toFixed(1)}%`;
-  els.duelFlipA.textContent = modelA.flippedFragility.toString();
-  els.duelFlipB.textContent = modelB.flippedFragility.toString();
+  els.duelSignalA.textContent = `Estimated robustness: ${(100 - uncertaintyA).toFixed(
+    1
+  )}%`;
+  els.duelSignalB.textContent = `Estimated robustness: ${(100 - uncertaintyB).toFixed(
+    1
+  )}%`;
 
   const leaderA = winProbA >= winProbB;
   els.duelCardA.classList.toggle("leading", leaderA);
@@ -478,67 +405,26 @@ function renderMatchupExplorer(data) {
     "matchupChart",
     [
       {
-        x: ["Duel confidence split"],
-        y: [winProbA * 100],
+        x: ["Win probability", "Robustness under noise", "Interaction risk"],
+        y: [winProbA * 100, 100 - uncertaintyA, modelA.pct_interaction],
         type: "bar",
-        name: `${modelA.model} win prob`,
+        name: modelA.model,
         marker: { color: "#6366f1" },
       },
       {
-        x: ["Duel confidence split"],
-        y: [winProbB * 100],
+        x: ["Win probability", "Robustness under noise", "Interaction risk"],
+        y: [winProbB * 100, 100 - uncertaintyB, modelB.pct_interaction],
         type: "bar",
-        name: `${modelB.model} win prob`,
+        name: modelB.model,
         marker: { color: "#06b6d4" },
       },
     ],
     {
-      barmode: "stack",
-      margin: { l: 50, r: 20, t: 8, b: 45 },
+      barmode: "group",
+      margin: { l: 55, r: 20, t: 8, b: 55 },
       paper_bgcolor: "rgba(0,0,0,0)",
       plot_bgcolor: "rgba(255,255,255,0.62)",
       yaxis: { title: "Score (%)", gridcolor: "#dbeafe", range: [0, 100] },
-      xaxis: { gridcolor: "#eff6ff", showticklabels: false },
-      legend: { orientation: "h", y: 1.16, x: 0 },
-    },
-    { responsive: true, displayModeBar: false }
-  );
-
-  Plotly.react(
-    "matchupProfileChart",
-    [
-      {
-        x: ["Sampling", "Prompt", "Distance", "Interaction"],
-        y: [
-          modelA.pct_sampling,
-          modelA.pct_prompt,
-          modelA.pct_distance,
-          modelA.pct_interaction,
-        ],
-        type: "scatter",
-        mode: "lines+markers",
-        name: modelA.model,
-        line: { color: "#6366f1", width: 3 },
-      },
-      {
-        x: ["Sampling", "Prompt", "Distance", "Interaction"],
-        y: [
-          modelB.pct_sampling,
-          modelB.pct_prompt,
-          modelB.pct_distance,
-          modelB.pct_interaction,
-        ],
-        type: "scatter",
-        mode: "lines+markers",
-        name: modelB.model,
-        line: { color: "#06b6d4", width: 3 },
-      },
-    ],
-    {
-      margin: { l: 52, r: 20, t: 8, b: 45 },
-      paper_bgcolor: "rgba(0,0,0,0)",
-      plot_bgcolor: "rgba(255,255,255,0.62)",
-      yaxis: { title: "Variance share (%)", gridcolor: "#dbeafe", range: [0, 100] },
       xaxis: { gridcolor: "#eff6ff" },
       legend: { orientation: "h", y: 1.16, x: 0 },
     },
@@ -554,14 +440,8 @@ function renderMatchupExplorer(data) {
       ? "moderate edge"
       : "clear edge";
   els.matchupInference.textContent =
-    `At ${state.confidence}% confidence, ${favoredModel} shows a ${gapLabel} with ${(
-      favoredProb * 100
-    ).toFixed(1)}% duel confidence. This card combines variance robustness, interaction risk, and flipped-pair fragility.`;
-  const riskGap = Math.abs(uncertaintyA - uncertaintyB);
-  els.matchupProfileInference.textContent =
-    `Uncertainty profile gap is ${riskGap.toFixed(
-      1
-    )} points on interaction risk, which is the strongest driver of significance fragility in your analysis.`;
+    `At ${state.confidence}% confidence, ${favoredModel} has a ${gapLabel} with estimated matchup win probability ` +
+    `${(favoredProb * 100).toFixed(1)}%. Higher interaction-risk models are more likely to lose significance under robust uncertainty modeling.`;
 }
 
 function setupScrollReveal() {
